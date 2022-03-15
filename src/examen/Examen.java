@@ -5,10 +5,7 @@ import examen.model.Client;
 import examen.model.Trailer;
 import examen.model.Vehicle;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
@@ -59,11 +56,9 @@ public class Examen {
                     break;
                 case 3:
                     clientsWithMoreThanOneCar(clients);
-//                    System.out.println(clients);
-
                     break;
                 case 4:
-
+                    clientsWhoPurchaseAVehicleWithSpecialBrand(clients);
                     break;
                 case 5:
                     System.out.println("Thank you for using my app.!!");
@@ -173,14 +168,51 @@ public class Examen {
 
     public static void clientsWithMoreThanOneCar(List<Client> clients) {
         for (Client clientObj : clients) {
-            System.out.println("CLIENTE: "+clientObj.getName());
-            for (Vehicle vehicleObj : clientObj.getVehicle()) {
-//                if (clientObj.getVehicle().size() > 1) {
-//
-//                }
-                System.out.println(vehicleObj);
+            System.out.println("CLIENTE: " + clientObj.getName());
+            boolean flag = false;
+            String saleDate = "";
+            if (clientObj.getVehicle().size() > 1) {
+                List<String> datesToCompare = new ArrayList<>();
+                for (Vehicle vehicleObj : clientObj.getVehicle()) {
+                    String date = vehicleObj.getCarSaleDate().toString();
+                    String[] year = date.split("-");
+                    datesToCompare.add(year[0]);
+                }
+                for (int i = 0; i < datesToCompare.size(); i++) {
+                    String aux = datesToCompare.get(i);
+                    for (int j = 0; j < datesToCompare.size(); j++) {
+                        if (aux.equals(datesToCompare.get(j))) {
+                            flag = true;
+                            saleDate = datesToCompare.get(j);
+                        }
+                    }
+                }
+                if (flag) {
+                    System.out.println(clientObj.getName() + " " + clientObj.getLastName()
+                            + " tiene más de un vehículo comprado el año: " + saleDate
+                    );
+                }
+            } else {
+                System.out.println(clientObj.getName() + " " + clientObj.getLastName() + " no tiene más de 2 vehículos comprados en un mismo año.");
             }
-            
+        }
+    }
+
+    public static void clientsWhoPurchaseAVehicleWithSpecialBrand(List<Client> clients) {
+        Scanner sc = new Scanner(System.in);
+        String brandRequired = sc.next();
+
+        for (Client clientObj : clients) {
+            boolean flag = false;
+            for (Vehicle vehicle : clientObj.getVehicle()) {
+                if (brandRequired.equals(vehicle.getBrand())) {
+                    flag = true;
+                }
+            }
+            if (flag) {
+                System.out.println(clientObj.getName() + " " + clientObj.getLastName() + " ha comprado un vehículo de la marca: " + brandRequired
+                );
+            }
         }
     }
 }
